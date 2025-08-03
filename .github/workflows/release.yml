@@ -44,7 +44,7 @@ jobs:
             const runnerVersion = fs.readFileSync('${{ github.workspace }}/src/runnerversion', 'utf8').replace(/\n$/g, '')
             try {
               const release = await github.rest.repos.getReleaseByTag({
-                owner: '${{ github.event.repository.owner.name }}',
+                owner: '${{ github.repository_owner }}',
                 repo: '${{ github.event.repository.name }}',
                 tag: 'v' + runnerVersion
               })
