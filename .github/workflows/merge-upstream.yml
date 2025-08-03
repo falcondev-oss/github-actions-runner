@@ -24,6 +24,7 @@ jobs:
           git push origin main
 
   release:
+    needs: merge-upstream
     uses: ./.github/workflows/release.yml
     permissions:
       contents: read
