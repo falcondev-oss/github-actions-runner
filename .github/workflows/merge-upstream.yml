@@ -1,0 +1,27 @@
+name: Merge upstream
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Every Sunday at midnight
+  workflow_dispatch:
+
+concurrency:
+  group: "merge-upstream"
+  cancel-in-progress: false
+
+jobs:
+  merge-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags
+
+      - name: Merge upstream
+        run: |
+          git merge --no-edit upstream/main || true
+          git push origin main
+
+  release:
+    uses: ./.github/workflows/release.yml

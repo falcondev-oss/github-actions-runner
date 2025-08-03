@@ -5,45 +5,46 @@ on:
   push:
     paths:
       - releaseVersion
+  workflow_call:
 
 jobs:
   check:
     if: startsWith(github.ref, 'refs/heads/releases/') || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check_version.outputs.result }}
     steps:
       - uses: actions/checkout@v4
 
-      # Make sure ./releaseVersion match ./src/runnerversion
       # Query GitHub release ensure version is not used
       - name: Check version
+        id: check_version
         uses: actions/github-script@v7.0.1
         with:
           github-token: ${{secrets.GH_TOKEN}}
           script: |
             const fs = require('fs');
             const runnerVersion = fs.readFileSync('${{ github.workspace }}/src/runnerversion', 'utf8').replace(/\n$/g, '')
-            const releaseVersion = fs.readFileSync('${{ github.workspace }}/releaseVersion', 'utf8').replace(/\n$/g, '')
-            if (runnerVersion != releaseVersion) {
-              console.log('Request Release Version: ' + releaseVersion + '\nCurrent Runner Version: ' + runnerVersion)
-              core.setFailed('Version mismatch! Make sure ./releaseVersion match ./src/runnerVersion')
-              return
-            }
             try {
               const release = await github.rest.repos.getReleaseByTag({
                 owner: '${{ github.event.repository.owner.name }}',
                 repo: '${{ github.event.repository.name }}',
                 tag: 'v' + runnerVersion
               })
-              core.setFailed('Release with same tag already created: ' + release.data.html_url)
+              console.log('Release with same tag already exists: ' + release.data.html_url)
+              return false
             } catch (e) {
               // We are good to create the release if release with same tag doesn't exists
               if (e.status != 404) {
                 throw e
               }
+              console.log('No existing release found with this tag. Proceeding with release.')
+              return true
             }
 
   build:
     needs: check
+    if: needs.check.outputs.should_release == 'true'
     outputs:
       linux-x64-sha: ${{ steps.sha.outputs.linux-x64-sha256 }}
       linux-arm64-sha: ${{ steps.sha.outputs.linux-arm64-sha256 }}
