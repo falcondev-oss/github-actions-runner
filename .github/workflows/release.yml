@@ -328,7 +328,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const runnerVersion = fs.readFileSync('${{ github.workspace }}/releaseVersion', 'utf8').replace(/\n$/g, '')
+            const runnerVersion = fs.readFileSync('${{ github.workspace }}/src/runnerversion', 'utf8').replace(/\n$/g, '')
             console.log(`Using runner version ${runnerVersion}`)
             core.setOutput('version', runnerVersion);
 
