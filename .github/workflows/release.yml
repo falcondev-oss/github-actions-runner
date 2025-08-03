@@ -2,19 +2,34 @@ name: Runner CD
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - releaseVersion
-  workflow_call:
 
 jobs:
+  merge-upstream:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge upstream
+        run: |
+          git remote add upstream https://github.com/actions/runner
+          git fetch upstream
+          git merge --no-edit upstream/main
+          git push origin main
+
   check:
-    if: startsWith(github.ref, 'refs/heads/releases/') || github.ref == 'refs/heads/main'
+    needs: merge-upstream
     runs-on: ubuntu-latest
     outputs:
       should_release: ${{ steps.check_version.outputs.result }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       # Query GitHub release ensure version is not used
       - name: Check version
