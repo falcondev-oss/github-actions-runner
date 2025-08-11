@@ -126,6 +126,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Update `runnerversion` file
+        run: |
+          echo "Updating runnerversion file to ${{ needs.check.outputs.version }}"
+          echo "${{ needs.check.outputs.version }}" > src/runnerversion
+
       # Build runner layout
       - name: Build & Layout Release
         run: |
