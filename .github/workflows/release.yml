@@ -12,7 +12,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -33,7 +33,7 @@ jobs:
       should_release: ${{ steps.check_version.outputs.should_release }}
       version: ${{ steps.check_version.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
 
@@ -124,7 +124,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Update `runnerversion` file
         run: |
@@ -171,7 +171,7 @@ jobs:
     needs: [build, check]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Download runner package tar.gz/zip produced by 'build' job
       - name: Download Artifact (win-x64)
@@ -316,7 +316,7 @@ jobs:
       IMAGE_NAME: ${{ github.repository_owner }}/actions-runner
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@v3
@@ -348,7 +348,7 @@ jobs:
             org.opencontainers.image.licenses=MIT
 
       - name: Generate attestation
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build-and-push.outputs.digest }}
