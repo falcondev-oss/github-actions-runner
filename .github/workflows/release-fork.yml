@@ -3,7 +3,7 @@ name: Runner CD
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 0" # Every Sunday at midnight UTC
+    - cron: '0 0 * * 0' # Every Sunday at midnight UTC
 
 jobs:
   merge-upstream:
@@ -40,7 +40,7 @@ jobs:
       # Query GitHub release ensure version is not used
       - name: Check version
         id: check_version
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v9
         with:
           github-token: ${{secrets.GH_TOKEN}}
           script: |
@@ -228,8 +228,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          tag_name: "v${{ needs.check.outputs.version }}"
-          release_name: "v${{ needs.check.outputs.version }}"
+          tag_name: 'v${{ needs.check.outputs.version }}'
+          release_name: 'v${{ needs.check.outputs.version }}'
           body: See [Release Notes](https://github.com/actions/runner/releases/tag/v${{ needs.check.outputs.version }})
 
       # Upload release assets (full runner packages)
