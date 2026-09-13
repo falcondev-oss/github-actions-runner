@@ -79,6 +79,11 @@ namespace GitHub.Runner.Worker
                     context.Start();
                     context.Debug($"Starting: Set up job");
                     context.Output($"Current runner version: '{BuildConstants.RunnerPackage.Version}'");
+                    var customActionsResultsUrl = Environment.GetEnvironmentVariable("CUSTOM_ACTIONS_RESULTS_URL");
+                    if (!string.IsNullOrEmpty(customActionsResultsUrl))
+                    {
+                        context.Output($"Using custom Actions results URL: '{customActionsResultsUrl}'");
+                    }
 
                     var setting = HostContext.GetService<IConfigurationStore>().GetSettings();
                     var credFile = HostContext.GetConfigFile(WellKnownConfigFile.Credentials);
