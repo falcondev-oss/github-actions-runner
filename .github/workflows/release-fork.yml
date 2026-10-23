@@ -137,6 +137,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: main
 
       - name: Update `runnerversion` file
         run: |
@@ -184,6 +186,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: main
 
       # Download runner package tar.gz/zip produced by 'build' job
       - name: Download Artifact (win-x64)
@@ -329,6 +333,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          ref: main
 
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@v3
